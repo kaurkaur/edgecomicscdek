@@ -1,0 +1,281 @@
+<html>
+<head>
+</head>
+<body>
+  <div class="cdek-calc" style="width:350px;">
+      <style>
+          .form-group select{width:100%;}
+          #cdec-calk-frame{
+              padding: 15px;
+              border-radius: 30px;
+              box-shadow: 0px 2px 20px rgba(0,0,0,0.15); 
+          }
+          .packgage-price{
+              font-size: 24px;
+              font-weight: 800;
+              text-align: center;
+          }
+          .cdek-calc .btn{
+            font-weight: 800;
+              text-transform: uppercase;
+          }
+          .cdek-info{
+              text-align: center;
+              font-size: 12px;
+              color:#bd0000;
+          }
+      </style>
+      <div class="cdek-form">
+          <div class="form-row">
+              <div class="form-group hidden">
+                <label for="inputCity">City</label>
+                <input type="text" class="form-control" id="inputCity">
+              </div>
+              <fieldset>
+                  <legend>Расчет Почта</legend>
+                  <div class="form-group">
+                    <label for="inputIndex">Индекс получателя:</label>
+                    <input style="width:100%;" type="number" maxlength="6" value="101000" class="form-control" id="inputIndex">
+                  </div>
+                  <div class="form-group">
+                    <label for="inputPost_weight">Вес (в граммах):</label>
+                    <input style="width:100%;" type="number" value="100" class="form-control" id="inputPost_weight">
+                  </div>
+                  <div class="form-group">
+                    <label for="inputPost_type">Тип отправления:</label>
+                    <select id="ComicsPost_type" class="form-control">
+                        <option selected value="3010">Бандероль</option>
+                        <option value="4030">Посылка</option>
+                    </select>
+                  </div>
+                  <div class="pochta-result">
+                      Стоимость отправки почтой: <strong><span class="result"></span></strong> руб.
+                  </div>
+              </fieldset>
+              <fieldset>
+                  <legend>Расчет СДЭК</legend>
+                  <div class="form-group">
+                    <label for="inputState">Выбор упаковки (<span class="packprice"></span> руб.)</label>
+                    <select id="ComicsSize" class="form-control">
+                        <option selected value="1">Синглы до 5шт / Пины до 10шт (до 1кг)</option>
+                        <option value="2">Синглы до 15-18шт (до 2кг)</option>
+                        <option value="3">Синглы до 30шт (до 3кг)</option>
+                        <option value="4">Синглы до 40шт (до 4кг)</option>
+                        <option value="7">Синглы до 60шт (до 6кг)</option>
+                        <option value="5">Синглы до 80шт (до 8кг)</option>
+                        <option value="6">Синглы до 120шт (до 12кг)</option>
+                        <option value="8">Фанко стандарт до 2шт (до 1кг)</option>
+                        <option value="9">Фанко стандарт до 4шт (до 2кг)</option>
+                    </select>
+                  </div>
+                  <div class="form-group hidden">
+                    <label for="inputState">Тип отправления СДЭК</label>
+                    <select id="ComicsTariff" class="form-control">
+                        <option value="1">Экспресс лайт</option>
+                        <option value="2">Магистральный экспресс</option>
+                        <option selected value="3">Посылка</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="inputState">Доставка</label>
+                    <select id="ComicsLocation" class="form-control">
+                        <option value="137">до двери</option>
+                        <option selected value="136">до пункта выдачи</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <input type="checkbox" id="Poster" class="form-control"> Упаковка для постера (до 5шт)
+                    <br>
+                    <input type="checkbox" id="Funko" class="form-control"> Упаковка для Funko (до 4шт)  
+                  </div>
+                  <input class="btn" type="button" style="width:100%;" id="create" value="Сгененрировать калькулятор"><br/>
+            </div>
+          </div><br/><div class="packgage-price hidden">Цена упаковки: <span class="packgage-price-val"></span> руб.</div>
+          <div class="iframe-block"></div>
+          </fieldset>
+  </div>
+      <script>
+  var file_src = "https://cdekcalc.ru/calculator.php";
+  var width=22;
+  var height=2;
+  var weight=0.55;
+  var lenght=30;
+  var price=80;
+  var fixedaddprice=38;
+  var priceinccalc=Math.round((1+price+fixedaddprice));
+
+
+  $('.packgage-price-val').empty().append(price);
+  $('.packprice').empty().append(price);
+
+  $('#create').click(function(){
+      $('#cdec-calk-frame').remove();
+      $('.cdek-info').removeClass('hidden');
+      file_src="https://kit.cdek-calc.ru/calc.php?city_from=248&weight="+weight+"&length="+lenght+"&width="+width+"&height="+height+"&tarifs="+$('#ComicsLocation').val()+"&markup="+priceinccalc+"&ceil=1&border=0"
+      //file_src="https://cdekcalc.ru/calculator.php?senderCityId=248&weight="+weight+"&length="+lenght + "&width=" + width + "&height=" + height + "&status=1&tariff="+ $('#ComicsTariff').val() +"&fromLocation=2&toLocation="+ $('#ComicsLocation').val() +"&cod_cost="+priceinccalc;
+      $('<iframe>')                      // Creates the element
+      .attr('src',file_src) // Sets the attribute spry:region="myDs"
+      .attr('width','320')
+      .attr('height','214')
+      .attr('scrolling','no')
+      .attr('id','cdec-calk-frame')
+      .appendTo('.iframe-block');
+   });
+
+  $('#ComicsSize,#ComicsTariff,#ComicsLocation,#Poster,#Funko').on('change', function() {
+      $('#cdec-calk-frame').remove();
+      $('.cdek-info').addClass('hidden');
+      priceinccalc=1;
+      if($('#ComicsSize').val()==1){
+          weight=0.55;
+          width=22;
+          lenght=30;
+          height=2;
+          price=80;
+          fixedaddprice=38;
+      }
+      if($('#ComicsSize').val()==2){
+          weight=2;
+          width=22;
+          lenght=30;
+          height=5;
+          price=80;
+          fixedaddprice=40;
+      }
+      if($('#ComicsSize').val()==3){
+          weight=3;
+          width=22;
+          lenght=30;
+          height=8;
+          price=80;
+          fixedaddprice=46;
+      }
+      if($('#ComicsSize').val()==4){
+          weight=4;
+          width=25;
+          lenght=35;
+          height=10;
+          price=70;
+          fixedaddprice=44;
+      }
+      if($('#ComicsSize').val()==7){
+          weight=6;
+          width=24;
+          lenght=34;
+          height=20;
+          price=110;
+          fixedaddprice=54;
+      }
+      if($('#ComicsSize').val()==5){
+          weight=8;
+          width=24;
+          lenght=34;
+          height=20;
+          price=110;
+          fixedaddprice=64;
+      }
+      if($('#ComicsSize').val()==6){
+          weight=12;
+          width=24;
+          lenght=34;
+          height=30;
+          price=150;
+          fixedaddprice=84;
+      }
+      if($('#ComicsSize').val()==8){
+          weight=1;
+          width=24;
+          lenght=17;
+          height=10;
+          price=30;
+          fixedaddprice=29;
+      }
+      if($('#ComicsSize').val()==9){
+          weight=2;
+          width=24;
+          lenght=35;
+          height=10;
+          price=60;
+          fixedaddprice=34;
+      }
+      if ($('#Poster').is(':checked')){
+          price=price+60;
+          weight=weight+1;
+          lenght=61;
+          if (height<8){
+              height=8;
+          }
+
+      }
+      if ($('#Funko').is(':checked')){
+          price=price+60;
+          weight=weight+1;
+          if (lenght<35){
+              lenght=35;
+          }
+          if (width<24){
+              width=24;
+          }
+          height=height+10;
+          fixedaddprice=fixedaddprice+5;
+
+      }
+      priceinccalc=Math.round((1+price+fixedaddprice));
+      $('.packgage-price-val').empty().append(price);
+      $('.packprice').empty().append(price);
+
+  });
+
+  var pweight = 100;
+  var boxpay = 80;        
+  PochtaPay();    
+  $('#ComicsPost_type,#inputIndex,#inputPost_weight').on('keyup change', function() {
+    PochtaPay();                                                  
+      if (parseInt($('#inputPost_weight').val()) > 1900) {
+          $('#ComicsPost_type').val(4030).change();
+          PochtaPay();
+      }
+  });
+  function PochtaPay(){
+      if ($('#inputPost_weight').val() <= 450){
+          pweight = parseInt($('#inputPost_weight').val()) + 100;
+          boxpay = 80;
+      }
+      if (($('#inputPost_weight').val() <= 1450) && ($('#inputPost_weight').val() > 450)){
+          pweight = parseInt($('#inputPost_weight').val()) + 100;
+          boxpay = 80;
+      }
+      if (($('#inputPost_weight').val() <= 1900) && ($('#inputPost_weight').val() > 1450)){
+          pweight = parseInt($('#inputPost_weight').val()) + 110;
+          boxpay = 80;
+      }
+      if ($('#inputPost_weight').val() > 2000){
+          pweight = parseInt($('#inputPost_weight').val()) + 400;
+          boxpay = 110;
+      }
+      if ($('#inputPost_weight').val() > 3000){
+          pweight = parseInt($('#inputPost_weight').val()) + 400;
+          boxpay = 140;
+      }
+      if ($('#inputPost_weight').val() > 4000){
+          pweight = parseInt($('#inputPost_weight').val()) + 400;
+          boxpay = 200;
+      }
+      $.ajax({
+          url: 'https://tariff.pochta.ru/v2/calculate/tariff?json&object='+$('#ComicsPost_type').val()+'&from=614070&to='+$('#inputIndex').val()+'&weight='+pweight,
+          method: 'GET',
+          success: function(data) {
+              console.log(data);
+              var json = data;
+              var pay = parseInt(json.pay)/100;
+              if (($('#inputPost_weight').val() <= 1900) && $('#ComicsPost_type').val() == 3010) {
+                  pay = pay * 1.2;                
+              }
+              pay = Math.ceil(((pay + boxpay)/0.9141/5))*5;
+              $('.result').html(pay);
+          }
+      });        
+  }
+  </script>
+</body>
+</html>
